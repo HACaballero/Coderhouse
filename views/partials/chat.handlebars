@@ -1,0 +1,120 @@
+<div class="container">
+  <h1>
+    Centro de Mensajerías
+    <span id="comprension">
+      0% de comprensión
+    </span>
+  </h1>
+  <label>
+    Email:
+    <input
+      type="text"
+      placeholder="correo electrónico"
+      id="email"
+      value="alexis@gmail.com"
+    />
+  </label>
+  <label>
+    Nombre:
+    <input type="text" placeholder="Nombre" id="nombre" value="Alexis" />
+  </label>
+  <label>
+    Apellido:
+    <input type="text" placeholder="Apellido" id="apellido" value="Caballero" />
+  </label>
+  <label>
+    Edad:
+    <input type="number" placeholder="Edad" id="edad" value="27" />
+  </label>
+  <label>
+    Alias:
+    <input type="text" placeholder="Alias" id="alias" value="Ale" />
+  </label>
+  <label>
+    Avatar:
+    <input type="text" placeholder="Avatar" id="avatar" value="" />
+  </label>
+  <div class="chat_container container">
+    <h4>
+      Chat
+    </h4>
+    <div id="chat">
+      {{#each mensajes}}
+        <div>
+          <span style="color: blue;">
+            {{author.nombre}}
+          </span>
+          [
+          <span style="color: brown;">
+            {{date}}
+          </span>
+          ]
+          <span style="color: green;">
+            {{texto}}
+          </span>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="form">
+    <input type="text" placeholder="mensaje" id="mensaje" />
+    <button class="btn btn-primary" id="enviar" onclick="enviar()">
+      Enviar
+    </button>
+  </div>
+</div>
+<script>
+  function enviar() {
+	let email = document.getElementById("email").value;
+	let nombre = document.getElementById("nombre").value;
+	let apellido = document.getElementById("apellido").value;
+	let edad = document.getElementById("edad").value;
+	let alias = document.getElementById("alias").value;
+	let avatar = document.getElementById("avatar").value;
+
+	if( email) {
+	let mensaje = document.getElementById("mensaje").value;
+
+		let body = {
+			author:{
+        email, nombre,apellido, edad,alias, avatar,email
+      },
+			texto: mensaje,
+			
+		}
+	socket.emit("nuevo_mensaje",body);
+	} else {
+		window.alert("Necesita ingresar su correo")
+	}
+
+
+}
+	socket.on("mensajes", (socketData) => {
+    console.log(socketData)
+    let data = socketData.messages.result;
+    document.getElementById("comprension").innerHTML = "%"+ socketData.comprension+" de comprensión";
+
+		let chat = document.getElementById("chat").innerHTML;
+		let htmlBody = "";
+		for (i in data) {
+      let item = data[i]
+      let author = item.author
+			htmlBody += `
+  <div>
+    <span style="color: blue;">
+      ${author.alias}
+    </span>
+    [
+    <span style="color: brown;">
+      ${author.email}
+    </span>
+    ]
+    <span style="color: green;">
+      ${item.texto}
+    </span>
+  </div>
+  `;
+		}
+		document.getElementById("chat").innerHTML = htmlBody;
+	});
+</script>

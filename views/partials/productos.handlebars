@@ -1,0 +1,38 @@
+<div class="container">
+	<a href="/" class="btn btn-primary">Nuevo producto</a>
+	{{#if empty}}
+		<h2>No hay productos disponibles</h2>
+
+	{{else}}
+		<table class="table table-striped table-dark">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Nombre</th>
+					<th scope="col">Precio</th>
+					<th scope="col">Imagen</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				{{#each list}}
+					<tr>
+						<td>{{id}}</td>
+						<td>{{title}}</td>
+						<td>{{price}}</td>
+						<td><img src={{image}} height="50" /></td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	{{/if}}
+</div>
+<script>
+
+	let socket = new io(); socket.on("init", (data) => { console.log("SOCKET",
+	data); let tbody = document.getElementById("tbody").innerHTML; let htmlBody =
+	""; for (item of data) { htmlBody += ` <tr> <td>${item.id}</td>
+	<td>${item.title}</td> <td>${item.price}</td> <td><img src=${item.image}
+	height="50" /></td> </tr>`; } document.getElementById("tbody").innerHTML =
+	htmlBody; });
+
+</script>
