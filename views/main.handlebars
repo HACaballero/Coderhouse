@@ -1,5 +1,23 @@
 <div class="container">
-<h1>Coderhouse-6</h1>
+
+{{#if session}}
+<div class="alert alert-success d-flex justify-content-between" role="alert">
+  Bienvenido {{user}}
+
+ 		<a class="btn btn-outline-success" type="submit" href="/logout">Logout</a>
+
+</div>
+
+{{else}}
+	<nav class="navbar navbar-light bg-light justify-content-between" style="padding: 20px;">
+	<a class="navbar-brand">CoderHouse-Alexis Caballero</a>
+	<form class="form-inline">
+	
+		<a class="btn btn-outline-success my-2 my-sm-0" type="submit" href="login">Login</a>
+	</form>
+	</nav>
+{{/if}}
+
 
 	<div class="row justify-content-md-center">
 		<div class="col-5 align-self-center">
