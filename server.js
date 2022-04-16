@@ -15,27 +15,18 @@ const { createProductosTable } = require("./mariaDB/createTable");
 const { selectProductos } = require("./mariaDB/mariaDB");
 const { createMensajesTable } = require("./sqlite/createMensajesTable");
 const { getMockProductos } = require("./mock/productos.mock");
+const { session } = require("./utils/session");
+
+//Routes
+const { authRouter } = require("./Modules/Auth/auth.routes");
+
 app.use(cors("*"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-//Session
-var session = require("express-session");
-const MongoStore = require("connect-mongo");
-const advancedOptions = {useNewUrlParser:true, useUnifiedTopology:true}
-app.use(
-	session({
-		store: MongoStore.create({ mongoUrl: "mongodb+srv://ACaballero:afotNbT5cDOvGazW@cluster0.rkbgt.mongodb.net/sesiones?retryWrites=true&w=majority",mongoOptions:advancedOptions }),
-		secret: "secretDB",
-		resave: false,
-		saveUninitialized: false,
+app.use(session); // Session
 
-		cookie: {
-			expires: 600000,
-		},
-	})
-);
 const { connect } = require("./mongoDB/connect");
 connect();
 app.engine(
@@ -47,47 +38,37 @@ app.engine(
 );
 app.set("view engine", "handlebars");
 app.use("/api/productos", router);
+app.use("/auth", authRouter);
 
 createProductosTable();
 createMensajesTable();
 
 app.get("/", async (req, res) => {
-	if (!req.session.username) {
-		res.redirect("/login");
+	if (!req.session.email) {
+		res.redirect("/auth/login");
 	}
-	console.log(`Visitó la pag ${req.session.contador} veces.`);
 	productos = await selectProductos();
 	productos = JSON.parse(JSON.stringify(productos));
 	let { mensajes, comprension } = await getMensajes();
 	res.render("main", {
 		layout: "index",
 		list: productos,
-		session: req.session.username ? true : false,
-		user: req.session.username,
+		session: req.session.email ? true : false,
+		user: req.session.email,
 		mensajes: mensajes,
 		comprension: comprension,
 		empty: productos.length == 0 ? true : false,
 	});
 });
 
-app.get("/login", async (req, res) => {
-	if (req.session.username) {
-		res.redirect("/");
-	}
-	productos = await selectProductos();
-	productos = JSON.parse(JSON.stringify(productos));
-	let { mensajes, comprension } = await getMensajes();
-	res.render("login", {
+app.get("/register", async (req, res) => {
+	res.render("register", {
 		layout: "index",
-		list: productos,
-		mensajes: mensajes,
-		comprension: comprension,
-		empty: productos.length == 0 ? true : false,
 	});
 });
 
 app.get("/logout", async (req, res) => {
-	let user = req.session.username;
+	let user = req.session.email;
 	req.session.destroy((err) => {
 		if (err) {
 			return res.json({ status: "Logout ERROR", body: err });
@@ -123,13 +104,6 @@ app.get("/productos-test", async (req, res) => {
 		comprension: comprension,
 		empty: productos.length == 0 ? true : false,
 	});
-});
-
-app.post("/login", async (req, res) => {
-	if (req.body.username) {
-		req.session.username = req.body.username;
-	}
-	res.redirect("/");
 });
 
 httpServer.listen(8080, () => console.log("SERVER ON"));
