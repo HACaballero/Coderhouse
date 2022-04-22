@@ -4,7 +4,7 @@ const { engine } = require("express-handlebars");
 
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
-const { getMensajes, socketChat } = require("./chat.socket");
+const { getMensajes, socketChat } = require("./Modules/Mensajes/chat.socket");
 let cors = require("cors");
 
 const app = express();
@@ -16,9 +16,13 @@ const { selectProductos } = require("./mariaDB/mariaDB");
 const { createMensajesTable } = require("./sqlite/createMensajesTable");
 const { getMockProductos } = require("./mock/productos.mock");
 const { session } = require("./utils/session");
+require("dotenv").config();
+var argv = require("minimist")(process.argv.slice(2));
 
+const PORT = argv.PORT || 8080;
 //Routes
 const { authRouter } = require("./Modules/Auth/auth.routes");
+const { envRouter } = require("./Modules/Env_Info/env_info.routes");
 
 app.use(cors("*"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,16 +33,21 @@ app.use(session); // Session
 
 const { connect } = require("./mongoDB/connect");
 connect();
+
+const dirname = __dirname.replace("src", "");
+console.log(dirname);
 app.engine(
 	"handlebars",
 	engine({
-		layoutsDir: __dirname + "/views/layouts",
-		partialsDir: __dirname + "/views/partials/",
+		layoutsDir: dirname + "/views/layouts",
+		partialsDir: dirname + "/views/partials/",
 	})
 );
+console.log("URL", __dirname + "/views/layouts");
 app.set("view engine", "handlebars");
 app.use("/api/productos", router);
 app.use("/auth", authRouter);
+app.use("/info", envRouter);
 
 createProductosTable();
 createMensajesTable();
@@ -105,8 +114,7 @@ app.get("/productos-test", async (req, res) => {
 		empty: productos.length == 0 ? true : false,
 	});
 });
-
-httpServer.listen(8080, () => console.log("SERVER ON"));
+httpServer.listen(PORT, () => console.log("SERVER ON"));
 
 io.on("connection", (socket) => {
 	socketChat(io, socket);

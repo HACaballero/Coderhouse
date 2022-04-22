@@ -1,8 +1,7 @@
-var moment = require("moment");
-const { insertMensaje, selectMensajes } = require("./sqlite/sqlite3");
-const { ContenedorMongoDB } = require("./mongoDB/Mensaje");
-const { authorSchema } = require("./mongoDB/models/Mensaje.schema");
+const { ContenedorMongoDB } = require("./../../mongoDB/Mensaje");
+const { authorSchema } = require("./../../mongoDB/models/Mensaje.schema");
 const { normalize } = require("normalizr");
+const moment = require("moment");
 
 const contenedorMongo = new ContenedorMongoDB();
 
