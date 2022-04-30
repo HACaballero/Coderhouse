@@ -1,5 +1,6 @@
-const { ContenedorMongoDB } = require("./../../mongoDB/Mensaje");
-const { authorSchema } = require("./../../mongoDB/models/Mensaje.schema");
+const { ContenedorMongoDB } = require("./../../databases/mongoDB/Mensaje");
+
+const { authorSchema } = require("./../../databases/mongoDB/models/Mensaje.schema");
 const { normalize } = require("normalizr");
 const moment = require("moment");
 

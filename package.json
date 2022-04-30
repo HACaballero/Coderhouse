@@ -5,7 +5,9 @@
   "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/server.js --PORT=8080"
+    "start": "nodemon ./src/server.js --PORT=8080",
+    "start:prod": "forever ./src/server.js --PORT=8080",
+    "start:pm2": "pm2 start ./src/server.js --PORT=8080"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +19,7 @@
     "express": "^4.17.2",
     "express-handlebars": "^6.0.2",
     "express-session": "^1.17.2",
+    "forever": "^4.0.3",
     "knex": "^0.95.15",
     "minimist": "^1.2.6",
     "moment": "^2.29.1",

@@ -1,9 +1,9 @@
 const express = require("express");
 const { Router } = express;
-const { ContenedorUser } = require("../../mongoDB/User");
 var argv = require("minimist")(process.argv.slice(2));
 
 const envRouter = new Router();
+const numCPUs = require("os").cpus().length;
 
 getEnvInfo = () => {
 	return {
@@ -12,7 +12,8 @@ getEnvInfo = () => {
 		pid: process.pid,
 		version: process.version,
 		platform: process.platform,
-		memoryUsage:  JSON.stringify(process.memoryUsage()) ,
+		memoryUsage: JSON.stringify(process.memoryUsage()),
+		numCPUs,
 	};
 };
 

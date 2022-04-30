@@ -1,5 +1,5 @@
 const express = require("express");
-const { insertProducto, selectProductos } = require("./databases/mariaDB/mariaDB.js");
+const { insertProducto, selectProductos } = require("./mariaDB/mariaDB.js");
 const { Router } = express;
 const Producto = require("./Modules/Productos/Producto.js");
 let producto = new Producto("./productos.txt");

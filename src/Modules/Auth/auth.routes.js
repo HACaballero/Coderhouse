@@ -1,6 +1,7 @@
 const express = require("express");
 const { Router } = express;
-const { ContenedorUser } = require("../../mongoDB/User");
+const { ContenedorUser } = require("./../../databases/mongoDB/User");
+
 
 const authRouter = new Router();
 const userContainer = new ContenedorUser();

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const config = require("../../config/config");
-const { mongo_config: env } = config;
+const mongoose = require("mongoose");
+const config = require("./../../../config/config");
 
+const { mongo_config: env } = config;
 
 const connect = () => {
 	if (mongoose.connection.readyState == 0) {
