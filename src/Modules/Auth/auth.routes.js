@@ -33,4 +33,17 @@ authRouter.post("/login", async (req, res) => {
 	}
 });
 
+authRouter.get("/logout", async (req, res) => {
+	let user = req.session.email;
+	req.session.destroy((err) => {
+		if (err) {
+			return res.json({ status: "Logout ERROR", body: err });
+		}
+	});
+	res.render("logout", {
+		layout: "index",
+		user,
+	});
+});
+
 module.exports = { authRouter };
